@@ -1,0 +1,7 @@
+#+title: OI's Dotfiles
+#+author: Sergei Pshonnov
+
+* Table Of Contents :toc:
+- [[#doom-emacs][DOOM EMACS]]
+
+* DOOM EMACS

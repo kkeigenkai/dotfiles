@@ -1,0 +1,3 @@
+return {
+  { "mvdan/gofumpt" },
+}

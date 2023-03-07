@@ -1,0 +1,39 @@
+@document.meta
+title: README
+description: readme file for fish shell configuration
+authors: oi
+categories: config fish
+created: 2023-03-05
+updated: 2023-03-05
+version: 1.0.0
+tangle: $HOME/.config/fish/config.fish
+@end
+
+
+* Fish shell configuration
+  Fish shell with my little config. Even didn't have to separate to different files.
+
+  This I found of stackoverflow. \`eval...\` was about performance for neovim running from fish.
+  @code fish
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+  if status is-interactive
+  end
+  @end
+  My aliases. Downloaded some cool and new unix utilities:
+  - \`exa\` - modern and fast analogue for \`ls\`;
+  - \`bat\` - and again, modern and fust analogue for \`cat\`.
+  @code fish
+  alias l="exa -abghHliS"
+  alias cat="bat -p --theme=TwoDark"
+  alias bat="bat -p --theme=TwoDark"
+  alias b="bat -p --theme=TwoDark"
+  alias config="/opt/homebrew/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
+  @end
+  Starship - is shell prompt, like powershell.
+  @code fish
+  starship init fish | source
+  @end
+  This line need to make gpg work.
+  @code fish
+  export GPG_TTY=$(tty)
+  @end
