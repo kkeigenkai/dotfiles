@@ -1,7 +1,6 @@
 #+title: Doom Emacs Config
-#+property: header-args :tangle config.el
-#+auto-tangle: t
 #+author: Sergei Pshonnov
+#+property: header-args :tangle config.el
 
 * Basic
 #+begin_src emacs-lisp
@@ -111,6 +110,7 @@ I defined function ~insert-immediate~. It used for insert link for node and if n
 
 * Org Auto tangle
 ~org-auto-tangle~ atomatically insert all source block from org file to file. You need to set at the begining of file ~#+property: header-args :tangle file.el~, for manual tangling and ~#+auto-tangle t~ to enable auto tanging.
+Also I enabled default ~auto-tangle~, so i don't neet to enable it for every file.
 #+begin_src emacs-lisp
 (use-package org-auto-tangle
   :defer t
