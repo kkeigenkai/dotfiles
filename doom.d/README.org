@@ -1,20 +1,45 @@
+#+title: Doom Emacs Config
+#+author: Sergei Pshonnov
+#+property: header-args :tangle config.el
+#+auto-tangle: t
+
+* Basic
+#+begin_src emacs-lisp
 (setq user-full-name "Sergei Pshonnov"
       user-mail-address "sergei@pshonnov.ru")
+#+end_src
 
+* Appearance
+My main font is custom build Iosevka. Mostly I prefer don't display line numbers, but if need, I can display them using ~<leader t l>~.
+~initial-frame-alist~ set size and position for emacs when it opens.
+#+begin_src emacs-lisp
 (setq doom-font (font-spec :family "Iosevka Custom" :size 14)
       doom-big-font (font-spec :family "Iosevka Custom" :size 24))
 (setq doom-theme 'doom-one)
 (setq display-line-numbers-type nil)
 (setq initial-frame-alist '((left . 27) (top . 54) (width . 205) (height . 49)))
+#+end_src
 
+* Languages
+** LSP
+Disable lot for language server.
+#+begin_src emacs-lisp
 (setq lsp-log-io nil)
+#+end_src
 
+** Golang
+Use ~goimports~ instead of ~gofmt~.
+#+begin_src emacs-lisp
 (defun go-hook ()
   (setq gofmt-command "goimports")
   (add-hook 'before-save-hook 'gofmt-before-save))
 
 (add-hook 'go-mode-hook 'go-hook)
+#+end_src
 
+* Zen Mode
+For zen mode I use package called ~writeroom~.
+#+begin_src emacs-lisp
 (defvar +zen-text-scale 1.5)
 (defvar +zen-window-divider-size 4)
 (defvar +zen--old-window-divider-size nil)
@@ -49,13 +74,26 @@
 (map! :leader
       :desc "Toggle Zen Mode"
       "t z" #'writeroom-mode)
+#+end_src
 
+* Org Mode
+Hide markers like: *, /, ~ and etc.
+#+begin_src emacs-lisp
 (setq org-directory "~/org/")
 (setq org-hide-emphasis-markers t)
+#+end_src
 
+* Org Modern
+~org-modern~ enable beautiful appearance for ~.org~ files.
+#+begin_src emacs-lisp
 (add-hook 'org-mode-hook #'org-modern-mode)
 (add-hook 'org-agenda-finalize-hook #'org-modern-agenda)
+#+end_src
 
+* Org roam
+For now I use basic org-roam configuration.
+I defined function ~insert-immediate~. It used for insert link for node and if node doesn't exist, org-roam will create and won't open it.
+#+begin_src emacs-lisp
 (setq org-roam-directory "~/notes")
 
 (defun org-roam-node-insert-immediate (arg &rest args)
@@ -69,9 +107,14 @@
   :bind (
          ("C-c n I" . org-roam-node-insert-immediate)
          ))
+#+end_src
 
+* Org Auto tangle
+~org-auto-tangle~ atomatically insert all source block from org file to file. You need to set at the begining of file ~#+property: header-args :tangle file.el~, for manual tangling and ~#+auto-tangle t~ to enable auto tanging.
+#+begin_src emacs-lisp
 (use-package org-auto-tangle
   :defer t
   :hook (org-mode . org-auto-tangle-mode)
   :config
   (setq org-auto-tangle-default t))
+#+end_src

@@ -50,3 +50,6 @@
 ;(unpin! t)
 
 (package! writeroom-mode)
+(package! org-auto-tangle)
+(package! org-modern)
+(package! modus-themes)
