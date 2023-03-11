@@ -1,7 +1,7 @@
 #+title: Doom Emacs Config
-#+author: Sergei Pshonnov
 #+property: header-args :tangle config.el
 #+auto-tangle: t
+#+author: Sergei Pshonnov
 
 * Basic
 #+begin_src emacs-lisp
@@ -22,7 +22,7 @@ My main font is custom build Iosevka. Mostly I prefer don't display line numbers
 
 * Languages
 ** LSP
-Disable lot for language server.
+Disable log for language server.
 #+begin_src emacs-lisp
 (setq lsp-log-io nil)
 #+end_src
