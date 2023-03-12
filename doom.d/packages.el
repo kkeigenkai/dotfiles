@@ -53,3 +53,5 @@
 (package! org-auto-tangle)
 (package! org-modern)
 (package! modus-themes)
+(package! org-modern-indent
+  :recipe (:host github :repo "jdtsmith/org-modern-indent" :branch "main"))

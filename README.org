@@ -1,7 +1,5 @@
 #+title: OI's Dotfiles
 #+author: Sergei Pshonnov
 
-* Table Of Contents :toc:
-- [[#doom-emacs][DOOM EMACS]]
-
-* DOOM EMACS
+* Configuration
+- [[https://github.com/kkeigenkai/dotfiles/tree/main/doom.d][Doom Emacs]]

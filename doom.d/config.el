@@ -6,6 +6,8 @@
 (setq doom-theme 'doom-one)
 (setq display-line-numbers-type nil)
 (setq initial-frame-alist '((left . 27) (top . 54) (width . 205) (height . 49)))
+(setq doom-themes-enable-bold t
+      doom-themes-enable-italic t)
 
 (setq lsp-log-io nil)
 
@@ -53,8 +55,39 @@
 (setq org-directory "~/org/")
 (setq org-hide-emphasis-markers t)
 
-(add-hook 'org-mode-hook #'org-modern-mode)
-(add-hook 'org-agenda-finalize-hook #'org-modern-agenda)
+(use-package! org-modern
+  :after (org org-agenda org-roam)
+  :init
+  (global-org-modern-mode))
+
+(setq org-auto-align-tags nil
+      org-tags-column 0
+      org-fold-catch-invisible-edits 'show-and-error
+      org-special-ctrl-a/e t
+      org-insert-heading-respect-content t
+
+      org-hide-emphasis-markers t
+      org-pretty-entities t
+      org-ellipsis "…"
+
+      org-agenda-tags-column 0
+      org-agenda-block-separator ?─
+      org-agenda-time-grid
+      '((daily today require-timed)
+        (800 1000 1200 1400 1600 1800 2000)
+        " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄")
+      org-agenda-current-time-string
+      "⭠ now ─────────────────────────────────────────────────"
+
+      org-modern-list '((43 . "➤")
+                        (45 . "–")
+                        (42 . "•"))
+
+      org-modern-block-name
+      '((t . t)
+        ("src" "»" "«")
+        ("example" "»–" "–«")
+        ("quote" "❝" "❞")))
 
 (setq org-roam-directory "~/notes")
 
