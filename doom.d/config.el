@@ -43,15 +43,6 @@
 (setq org-directory "~/org/")
 (setq org-hide-emphasis-markers t)
 
-
-
-(defun org-roam-node-insert-immediate (arg &rest args)
-  (interactive "P")
-  (let ((args (cons arg args))
-        (org-roam-capture-templates (list (append (car org-roam-capture-templates)
-                                                  '(:immediate-finish t)))))
-    (apply #'org-roam-node-insert args)))
-
 (use-package org-roam
   :ensure t
   :demand t
@@ -83,6 +74,13 @@
   (require 'org-roam-dailies)
   (org-roam-db-autosync-mode))
 
+(defun org-roam-node-insert-immediate (arg &rest args)
+  (interactive "P")
+  (let ((args (cons arg args))
+        (org-roam-capture-templates (list (append (car org-roam-capture-templates)
+                                                  '(:immediate-finish t)))))
+    (apply #'org-roam-node-insert args)))
+
 (defun my/org-roam-filter-by-tag (tag-name)
   (lambda (node)
     (member tag-name (org-roam-node-tags node))))
@@ -103,7 +101,7 @@
   (remove-hook 'org-capture-after-finalize-hook #'my/org-roam-project-finalize-hook)
   (unless org-note-abort
     (with-current-buffer (org-capture-get :buffer)
-      (add-to-list 'org-agenda-files (buffer-line-name)))))
+      (add-to-list 'org-agenda-files (buffer-file-name)))))
 
 (defun my/org-roam-find-project ()
   (interactive)
@@ -124,7 +122,7 @@
 (defun my/org-roam-capture-inbox ()
   (interactive)
   (org-roam-capture- :node (org-roam-node-create)
-                     :templates '(("i" "inbox" plain "* %?"
+                     :templates '(("i" "inbox" plain "\n* %?"
                                    :if-new (file+head "Inbox.org" "#+title: Inbox\n")))))
 
 (defun my/org-roam-capture-task ()
@@ -133,16 +131,19 @@
   (org-roam-capture- :node (org-roam-node-read
                             nil
                             (my/org-roam-filter-by-tag "Project"))
-                     :templates '(("p" "project" plain "* TODO %?"
-                                   :if-new (file+head+olp "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+category: ${title}\n#+filetags: Project"
-                                                          ("Tasks"))))))
+                     :templates '(("p" "project" plain "** TODO %?"
+                                   :if-new
+                                   (file+head+olp
+                                    "%<%Y%m%d%H%M%S>-${slug}.org"
+                                    "#+title: ${title}\n#+category: ${title}\n#+filetags: Project"
+                                    ("Tasks"))))))
 
 (defun my/org-roam-copy-todo-to-today ()
   (interactive)
   (let ((org-refile-keep t) ;; Set this to nil to delete the original!
         (org-roam-dailies-capture-templates
-          '(("t" "tasks" entry "%?"
-             :if-new (file+head+olp "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n" ("Tasks")))))
+         '(("t" "tasks" entry "%?"
+            :if-new (file+head+olp "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n" ("Tasks")))))
         (org-after-refile-insert-hook #'save-buffer)
         today-file
         pos)

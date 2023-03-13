@@ -74,22 +74,9 @@ Hide markers like: *, /, ~ and etc.
 (setq org-hide-emphasis-markers t)
 #+end_src
 
-* Org Agenda
-
-#+begin_src emacs-lisp
-#+end_src
-
 * Org Roam
 For now I use basic org-roam configuration.
-I defined function ~insert-immediate~. It used for insert link for node and if node doesn't exist, org-roam will create and won't open it.
 #+begin_src emacs-lisp
-(defun org-roam-node-insert-immediate (arg &rest args)
-  (interactive "P")
-  (let ((args (cons arg args))
-        (org-roam-capture-templates (list (append (car org-roam-capture-templates)
-                                                  '(:immediate-finish t)))))
-    (apply #'org-roam-node-insert args)))
-
 (use-package org-roam
   :ensure t
   :demand t
@@ -122,6 +109,16 @@ I defined function ~insert-immediate~. It used for insert link for node and if n
   (org-roam-db-autosync-mode))
 #+end_src
 
+Function for insering node immediatly, without opening interactive window.
+#+begin_src emacs-lisp
+(defun org-roam-node-insert-immediate (arg &rest args)
+  (interactive "P")
+  (let ((args (cons arg args))
+        (org-roam-capture-templates (list (append (car org-roam-capture-templates)
+                                                  '(:immediate-finish t)))))
+    (apply #'org-roam-node-insert args)))
+#+end_src
+
 Add files that contains tag =Project= to =org-agenda-files=.
 #+begin_src emacs-lisp
 (defun my/org-roam-filter-by-tag (tag-name)
@@ -147,7 +144,7 @@ Find files that contains tag =Project=.
   (remove-hook 'org-capture-after-finalize-hook #'my/org-roam-project-finalize-hook)
   (unless org-note-abort
     (with-current-buffer (org-capture-get :buffer)
-      (add-to-list 'org-agenda-files (buffer-line-name)))))
+      (add-to-list 'org-agenda-files (buffer-file-name)))))
 
 (defun my/org-roam-find-project ()
   (interactive)
@@ -169,14 +166,16 @@ Direcorty for daily notes for org-roam. The path must be relative to =org-roam-d
 (setq org-roam-dailies-directory "daily/")
 #+end_src
 
+Function for adding todos in =Inbox.org=.
 #+begin_src emacs-lisp
 (defun my/org-roam-capture-inbox ()
   (interactive)
   (org-roam-capture- :node (org-roam-node-create)
-                     :templates '(("i" "inbox" plain "* %?"
+                     :templates '(("i" "inbox" plain "\n* %?"
                                    :if-new (file+head "Inbox.org" "#+title: Inbox\n")))))
 #+end_src
 
+Function for capturing task for certain project and puts it after =* Tasks= heading.
 #+begin_src emacs-lisp
 (defun my/org-roam-capture-task ()
   (interactive)
@@ -184,18 +183,22 @@ Direcorty for daily notes for org-roam. The path must be relative to =org-roam-d
   (org-roam-capture- :node (org-roam-node-read
                             nil
                             (my/org-roam-filter-by-tag "Project"))
-                     :templates '(("p" "project" plain "* TODO %?"
-                                   :if-new (file+head+olp "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+category: ${title}\n#+filetags: Project"
-                                                          ("Tasks"))))))
+                     :templates '(("p" "project" plain "** TODO %?"
+                                   :if-new
+                                   (file+head+olp
+                                    "%<%Y%m%d%H%M%S>-${slug}.org"
+                                    "#+title: ${title}\n#+category: ${title}\n#+filetags: Project"
+                                    ("Tasks"))))))
 #+end_src
 
+Copy =DONE= task to today note.
 #+begin_src emacs-lisp
 (defun my/org-roam-copy-todo-to-today ()
   (interactive)
   (let ((org-refile-keep t) ;; Set this to nil to delete the original!
         (org-roam-dailies-capture-templates
-          '(("t" "tasks" entry "%?"
-             :if-new (file+head+olp "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n" ("Tasks")))))
+         '(("t" "tasks" entry "%?"
+            :if-new (file+head+olp "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n" ("Tasks")))))
         (org-after-refile-insert-hook #'save-buffer)
         today-file
         pos)
